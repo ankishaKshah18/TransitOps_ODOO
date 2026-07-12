@@ -1,20 +1,14 @@
 from datetime import datetime
-
 from models import db
 
 
 class Trip(db.Model):
     __tablename__ = "trips"
 
-    id = db.Column(
-        db.Integer,
-        primary_key=True
-    )
+    id = db.Column(db.Integer, primary_key=True)
 
     trip_code = db.Column(
-        db.String(30),
-        unique=True,
-        nullable=False
+        db.String(30), unique=True, nullable=False
     )
 
     vehicle_id = db.Column(
@@ -29,33 +23,29 @@ class Trip(db.Model):
         nullable=False
     )
 
-    source = db.Column(
-        db.String(150),
-        nullable=False
+    source = db.Column(db.String(150), nullable=False)
+    destination = db.Column(db.String(150), nullable=False)
+
+    cargo_weight = db.Column(
+        db.Float, nullable=False
     )
 
-    destination = db.Column(
-        db.String(150),
-        nullable=False
-    )
-
-    distance_km = db.Column(
-        db.Float,
-        nullable=False
+    planned_distance = db.Column(
+        db.Float, nullable=False
     )
 
     start_time = db.Column(
-        db.DateTime,
-        nullable=False
+        db.DateTime, nullable=True
     )
 
     end_time = db.Column(
-        db.DateTime
+        db.DateTime, nullable=True
     )
 
     status = db.Column(
         db.String(30),
-        default="Scheduled"
+        default="Draft",
+        nullable=False
     )
 
     created_at = db.Column(
@@ -63,7 +53,6 @@ class Trip(db.Model):
         default=datetime.utcnow
     )
 
-    # Relationships
     vehicle = db.relationship("Vehicle", backref="trips")
     driver = db.relationship("Driver", backref="trips")
 
