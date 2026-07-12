@@ -1,34 +1,40 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-    LogIn,
-    Eye,
-    EyeOff,
+    UserPlus,
+    User,
     Mail,
     Lock,
+    Eye,
+    EyeOff,
     Loader2,
     AlertCircle
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
-function Login() {
+function Register() {
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { register } = useAuth(); // Assumes a register function exists in your AuthContext
 
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
     const [showPassword, setShowPassword] = useState(false);
-    const [rememberMe, setRememberMe] = useState(false);
-
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!email.trim() || !password.trim()) {
-            setError("Please enter both email and password.");
+        if (!name.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) {
+            setError("All fields are required.");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            setError("Passwords do not match.");
             return;
         }
 
@@ -36,14 +42,15 @@ function Login() {
             setLoading(true);
             setError("");
 
-            await login(email.trim(), password, rememberMe);
+            // Adjust this execution statement to fit your actual context API signature
+            await register(name.trim(), email.trim(), password);
 
             navigate("/dashboard");
         } catch (err) {
             setError(
                 err.response?.data?.message ||
                 err.message ||
-                "Invalid email or password."
+                "Failed to create an account. Please try again."
             );
         } finally {
             setLoading(false);
@@ -100,7 +107,7 @@ function Login() {
                         color: "#2563eb",
                         marginBottom: "16px"
                     }}>
-                        <LogIn size={24} />
+                        <UserPlus size={24} />
                     </div>
                     <h1
                         style={{
@@ -111,7 +118,7 @@ function Login() {
                             letterSpacing: "-0.025em"
                         }}
                     >
-                        TransitOps
+                        Create Account
                     </h1>
                     <p
                         style={{
@@ -121,7 +128,7 @@ function Login() {
                             fontWeight: "500"
                         }}
                     >
-                        Fleet Management System
+                        Join TransitOps Fleet Management
                     </p>
                 </div>
 
@@ -146,8 +153,54 @@ function Login() {
                 )}
 
                 <form onSubmit={handleSubmit}>
+                    {/* Full Name Input */}
+                    <div style={{ marginBottom: "18px" }}>
+                        <label style={{
+                            display: "block",
+                            fontSize: "14px",
+                            fontWeight: "600",
+                            color: "#334155",
+                            marginBottom: "6px"
+                        }}>
+                            Full Name
+                        </label>
+                        <div style={{ position: "relative" }}>
+                            <User
+                                size={18}
+                                style={{
+                                    position: "absolute",
+                                    left: "14px",
+                                    top: "50%",
+                                    transform: "translateY(-50%)",
+                                    color: "#94a3b8",
+                                    pointerEvents: "none"
+                                }}
+                            />
+                            <input
+                                autoFocus
+                                type="text"
+                                placeholder="John Doe"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                required
+                                style={{
+                                    width: "100%",
+                                    boxSizing: "border-box",
+                                    height: "44px",
+                                    padding: "0 14px 0 42px",
+                                    borderRadius: "8px",
+                                    border: "1px solid #cbd5e1",
+                                    fontSize: "15px",
+                                    color: "#0f172a",
+                                    transition: "all 0.15s ease",
+                                    background: "#ffffff"
+                                }}
+                            />
+                        </div>
+                    </div>
+
                     {/* Email Input */}
-                    <div style={{ marginBottom: "20px" }}>
+                    <div style={{ marginBottom: "18px" }}>
                         <label style={{
                             display: "block",
                             fontSize: "14px",
@@ -170,7 +223,6 @@ function Login() {
                                 }}
                             />
                             <input
-                                autoFocus
                                 type="email"
                                 placeholder="name@company.com"
                                 value={email}
@@ -193,7 +245,7 @@ function Login() {
                     </div>
 
                     {/* Password Input */}
-                    <div style={{ marginBottom: "20px" }}>
+                    <div style={{ marginBottom: "18px" }}>
                         <label style={{
                             display: "block",
                             fontSize: "14px",
@@ -260,57 +312,49 @@ function Login() {
                         </div>
                     </div>
 
-                    {/* Remember Me & Forgot Password */}
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            marginBottom: "24px",
+                    {/* Confirm Password Input */}
+                    <div style={{ marginBottom: "28px" }}>
+                        <label style={{
+                            display: "block",
                             fontSize: "14px",
-                        }}
-                    >
-                        <label
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "8px",
-                                cursor: "pointer",
-                                color: "#475569",
-                                userSelect: "none"
-                            }}
-                        >
-                            <input
-                                type="checkbox"
-                                checked={rememberMe}
-                                onChange={(e) => setRememberMe(e.target.checked)}
+                            fontWeight: "600",
+                            color: "#334155",
+                            marginBottom: "6px"
+                        }}>
+                            Confirm Password
+                        </label>
+                        <div style={{ position: "relative" }}>
+                            <Lock
+                                size={18}
                                 style={{
-                                    width: "16px",
-                                    height: "16px",
-                                    borderRadius: "4px",
-                                    border: "1px solid #cbd5e1",
-                                    accentColor: "#2563eb",
-                                    cursor: "pointer"
+                                    position: "absolute",
+                                    left: "14px",
+                                    top: "50%",
+                                    transform: "translateY(-50%)",
+                                    color: "#94a3b8",
+                                    pointerEvents: "none"
                                 }}
                             />
-                            Remember me
-                        </label>
-
-                        <button
-                            type="button"
-                            onClick={() => navigate("/forgot-password")}
-                            style={{
-                                background: "none",
-                                border: "none",
-                                color: "#2563eb",
-                                fontWeight: "600",
-                                cursor: "pointer",
-                                padding: 0,
-                                fontSize: "14px"
-                            }}
-                        >
-                            Forgot password?
-                        </button>
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                placeholder="••••••••"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                required
+                                style={{
+                                    width: "100%",
+                                    boxSizing: "border-box",
+                                    height: "44px",
+                                    padding: "0 14px 0 42px",
+                                    borderRadius: "8px",
+                                    border: "1px solid #cbd5e1",
+                                    fontSize: "15px",
+                                    color: "#0f172a",
+                                    transition: "all 0.15s ease",
+                                    background: "#ffffff"
+                                }}
+                            />
+                        </div>
                     </div>
 
                     {/* Submit Button */}
@@ -344,18 +388,18 @@ function Login() {
                         {loading ? (
                             <Loader2 size={18} style={{ animation: "spin 1s linear infinite" }} />
                         ) : (
-                            <LogIn size={18} />
+                            <UserPlus size={18} />
                         )}
-                        {loading ? "Signing In..." : "Sign In"}
+                        {loading ? "Creating Account..." : "Sign Up"}
                     </button>
                 </form>
 
-                {/* Switch to Registration */}
+                {/* Switch to Login */}
                 <div style={{ textAlign: "center", marginTop: "24px", fontSize: "14px", color: "#64748b" }}>
-                    Don't have an account?{" "}
+                    Already have an account?{" "}
                     <button
                         type="button"
-                        onClick={() => navigate("/register")}
+                        onClick={() => navigate("/login")}
                         style={{
                             background: "none",
                             border: "none",
@@ -365,7 +409,7 @@ function Login() {
                             padding: 0
                         }}
                     >
-                        Create an account
+                        Sign In
                     </button>
                 </div>
             </div>
@@ -380,4 +424,4 @@ function Login() {
     );
 }
 
-export default Login;
+export default Register;
