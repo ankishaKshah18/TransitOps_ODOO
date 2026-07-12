@@ -1,15 +1,11 @@
 from datetime import datetime
-
 from models import db
 
 
 class FuelLog(db.Model):
     __tablename__ = "fuel_logs"
 
-    id = db.Column(
-        db.Integer,
-        primary_key=True
-    )
+    id = db.Column(db.Integer, primary_key=True)
 
     vehicle_id = db.Column(
         db.Integer,
@@ -24,28 +20,21 @@ class FuelLog(db.Model):
     )
 
     fuel_station = db.Column(
-        db.String(150),
-        nullable=False
+        db.String(150), nullable=True
     )
 
-    litres = db.Column(
-        db.Float,
-        nullable=False
-    )
+    litres = db.Column(db.Float, nullable=False)
 
     price_per_litre = db.Column(
-        db.Float,
-        nullable=False
+        db.Float, nullable=False
     )
 
     total_cost = db.Column(
-        db.Float,
-        nullable=False
+        db.Float, nullable=False
     )
 
     odometer_reading = db.Column(
-        db.Float,
-        nullable=False
+        db.Float, nullable=False
     )
 
     fuel_date = db.Column(
@@ -53,7 +42,6 @@ class FuelLog(db.Model):
         default=datetime.utcnow
     )
 
-    # Relationships
     vehicle = db.relationship("Vehicle", backref="fuel_logs")
     trip = db.relationship("Trip", backref="fuel_logs")
 

@@ -1,15 +1,11 @@
 from datetime import datetime
-
 from models import db
 
 
 class Expense(db.Model):
     __tablename__ = "expenses"
 
-    id = db.Column(
-        db.Integer,
-        primary_key=True
-    )
+    id = db.Column(db.Integer, primary_key=True)
 
     vehicle_id = db.Column(
         db.Integer,
@@ -24,23 +20,19 @@ class Expense(db.Model):
     )
 
     category = db.Column(
-        db.String(100),
-        nullable=False
+        db.String(100), nullable=False
     )
 
     description = db.Column(
-        db.Text,
-        nullable=True
+        db.Text, nullable=True
     )
 
     amount = db.Column(
-        db.Float,
-        nullable=False
+        db.Float, nullable=False
     )
 
     expense_date = db.Column(
-        db.Date,
-        nullable=False
+        db.Date, nullable=False
     )
 
     created_at = db.Column(
@@ -48,7 +40,6 @@ class Expense(db.Model):
         default=datetime.utcnow
     )
 
-    # Relationships
     vehicle = db.relationship("Vehicle", backref="expenses")
     trip = db.relationship("Trip", backref="expenses")
 
