@@ -3,8 +3,8 @@ from datetime import datetime
 from models import db
 
 
-class Expense(db.Model):
-    __tablename__ = "expenses"
+class FuelLog(db.Model):
+    __tablename__ = "fuel_logs"
 
     id = db.Column(
         db.Integer,
@@ -23,34 +23,39 @@ class Expense(db.Model):
         nullable=True
     )
 
-    category = db.Column(
-        db.String(100),
+    fuel_station = db.Column(
+        db.String(150),
         nullable=False
     )
 
-    description = db.Column(
-        db.Text,
-        nullable=True
-    )
-
-    amount = db.Column(
+    litres = db.Column(
         db.Float,
         nullable=False
     )
 
-    expense_date = db.Column(
-        db.Date,
+    price_per_litre = db.Column(
+        db.Float,
         nullable=False
     )
 
-    created_at = db.Column(
+    total_cost = db.Column(
+        db.Float,
+        nullable=False
+    )
+
+    odometer_reading = db.Column(
+        db.Float,
+        nullable=False
+    )
+
+    fuel_date = db.Column(
         db.DateTime,
         default=datetime.utcnow
     )
 
     # Relationships
-    vehicle = db.relationship("Vehicle", backref="expenses")
-    trip = db.relationship("Trip", backref="expenses")
+    vehicle = db.relationship("Vehicle", backref="fuel_logs")
+    trip = db.relationship("Trip", backref="fuel_logs")
 
     def __repr__(self):
-        return f"<Expense {self.id}>"
+        return f"<FuelLog {self.id}>"
